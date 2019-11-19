@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.dao.extend.ArticleExtendMapper">
+
+	<resultMap id="ArticleExtendResultMap"
+		type="com.briup.bean.extend.ArticleExtend"
+		extends="com.briup.dao.ArticleMapper.BaseResultMap">
+		<association property="category" column="category_id" 
+		select="com.briup.dao.CategoryMapper.selectByPrimaryKey"></association>
+		<association property="author" column="author_id" 
+		select="com.briup.dao.UserMapper.selectByPrimaryKey"></association>
+	
+	</resultMap>
+	
+	<resultMap id="ArticleExtendWithCommentResultMap"
+		type="com.briup.bean.extend.ArticleExtend"
+		extends="com.briup.dao.ArticleMapper.BaseResultMap">
+		<association property="category" column="category_id" 
+		select="com.briup.dao.CategoryMapper.selectByPrimaryKey"></association>
+		<association property="author" column="author_id" 
+		select="com.briup.dao.UserMapper.selectByPrimaryKey"></association>
+		<!-- 通过articleId查找评论 -->
+		<collection
+            property="comments"
+            column="id"
+            select="com.briup.dao.extend.CommentExtendMapper.selectByArticleId">
+    </collection>
+	
+	</resultMap>
+
+	<select id="selectAll" resultMap="ArticleExtendWithCommentResultMap">
+		select * from cms_article
+	</select>
+	
+	<select id="selectById" parameterType="int" resultMap="ArticleExtendWithCommentResultMap">
+		select * from cms_article where id = #{id}
+	</select>
+
+</mapper>
